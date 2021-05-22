@@ -1,0 +1,20 @@
+{
+  "name": "simple-rest-server",
+  "version": "1.0.0",
+  "description": "A simple REST server written with Node.js",
+  "main": "main.js",
+  "repository": "git@github.com:Ruriel-SCIO/Simple_REST_Server.git",
+  "author": "Ruriel <rurielsantos@scio.solutions.com.br>",
+  "license": "GNUv3",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "compression": "^1.7.4",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "scripts": {
+    "dev": "nodemon main.js"
+  }
+}
