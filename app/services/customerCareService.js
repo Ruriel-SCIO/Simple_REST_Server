@@ -1,56 +1,70 @@
 const moment = require("moment")
 const customerCareController = require('../controller/customerCareController')
 const utils = require('utils')
-const _fieldBuilder = (dimension, value) => {
-    return {
-        "type": "selector",
-        "dimension": dimension,
-        "value": value
-    }
-}
-const _filterBuilder = (operator, status) => {
-    if (operator & status) {
-        return {
-            "type": "and",
-            "fields": [
-                _fieldBuilder('status', status),
-                _fieldBuilder('operator', operator)
-            ]
-        }
-    }
-    if(operator)
-        return _fieldBuilder('operator', operator)
-    if(status)
-        return _fieldBuilder('status', status)
+const _parseField = (field) => {
+    if (field.type == 'logic') return { "type": field.value, fields: [] };
+    return { "type": "selector", "dimension": field.name, "value": field.value };
 }
 
-const amount = async (query) => {
+const _filterBuilder = (fieldList) => {
+    let filter = {};
+    if (fieldList.length > 1) {
+        filter = _parseField(fieldList[1]);
+        filter.fields = [
+            _parseField(fieldList[0]),
+            _filterBuilder(fieldList.slice(2))
+        ];
+    }
+    else
+        filter = _parseField(fieldList[0]);
+    return filter;
+}
+const amount = async (body) => {
     const currentDate = moment()
-    const operator = query.operator
-    const status = query.status
-    const dimensions = query.dimensions ? query.dimensions.split(",") : []
-    const dateStart = query.dateStart || currentDate.format('YYYY-MM-DD');
-    const dateEnd = query.dateEnd || dateStart;
+    const dateStart = body.dateStart || currentDate.format('YYYY-MM-DD');
+    const dateEnd = body.dateEnd || dateStart;
     const interval = [dateStart, dateEnd].join("/")
-    const granularity = utils.getGranularity(query.granularity)
-    console.log(granularity)
-    const body = {
-        "dataSource" : "service",
-        "queryType": "timeseries",
-        "filter" : _filterBuilder(operator, status),
-        "dimensions" : dimensions,
-        "granularity" : granularity == 'none' ? 'all' : granularity,
-        "aggregations":[
+    const granularity = utils.getGranularity(body.granularity)
+    const request = {
+        "dataSource": "service",
+        "queryType": "groupBy",
+        "dimensions": body.dimensions || [],
+        "filter": body.filter ? _filterBuilder(body.filter) : null,
+        "granularity": granularity,
+        "aggregations": [
             {
-                "type" : "count",
-                "name" : "count"
+                "type": "count",
+                "name": "count"
             }
         ],
-        "intervals" : [interval]
+        "intervals": [interval]
     }
-    return customerCareController.fetchAmount(body)
+    const result = await customerCareController.nativeQuery(request)
+    return utils.groupByTime(result.data)
 }
 
 module.exports = {
-    "amount" : amount
+    "amount": amount
 }
+
+/**
+ * queryType: "groupBy"
+ * "dataSource":
+ * {
+ *      "type" : "query",
+ *      "query" : {
+            "dataSource": "service",
+            "queryType": "groupBy",
+            "dimensions": body.dimensions || [],
+            "filter": body.filter ? _filterBuilder(body.filter) : null,
+            "granularity": granularity,
+            "aggregations": [
+                {
+                    "type": "count",
+                    "name": "count"
+                }
+            ],
+            "intervals": [interval]
+    }
+}
+ */

@@ -1,12 +1,12 @@
 const Router = require('express').Router
 const customerCareService = require('../../services/customerCareService')
-module.exports = Router().get('/customerCare/amount', async (req, res, next) => {
+module.exports = Router().post('/customerCare/amount', async (req, res, next) => {
     try {
-        const result = await customerCareService.amount(req.query)
-        res.json(result.data)
+        const result = await customerCareService.amount(req.body)
+        res.json(result)
     }
     catch (err) {
-        console.log(err)
+        // console.log(err)
         res.send(err)
     }
 })
