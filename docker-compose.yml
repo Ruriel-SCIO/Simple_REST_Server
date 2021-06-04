@@ -3,8 +3,7 @@ services:
     node_server:
         build: .
         container_name: node_server
+        network_mode: host
         environment: 
             PORT: '7000'
             DRUID_SERVER: 'http://localhost:8888'
-        expose: 
-            - ${PORT}

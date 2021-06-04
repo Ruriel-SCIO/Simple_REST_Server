@@ -6,7 +6,7 @@ module.exports = Router().post('/customerCare/amount', async (req, res, next) =>
         res.json(result)
     }
     catch (err) {
-        // console.log(err)
+        console.log(err)
         res.send(err)
     }
 })

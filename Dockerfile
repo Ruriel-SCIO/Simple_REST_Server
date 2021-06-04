@@ -5,5 +5,5 @@ COPY ./package.json ${PROJECT_DIR}/
 COPY ./app ${PROJECT_DIR}/app
 COPY ./config ${PROJECT_DIR}/config
 COPY ./main.js ${PROJECT_DIR}/
-RUN npm install
-ENTRYPOINT [ "npm", "start" ]
+RUN npm install --production
+ENTRYPOINT [ "npm", "start"]

@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 const _GRANULARITIES = ['all', 'none', 'second', 'minute', 'fifteen_minute', 'thirty_minute', 'hour', 'day', 'week', 'month', 'quarter' ,'year'];
 
 const _getGranularity = searchValue => {
@@ -36,7 +38,7 @@ const groupByQuery = (dataSource, dimensions, filterElements, granularity, dateS
         "dataSource": dataSource,
         "queryType": "groupBy",
         "dimensions": dimensions || [],
-        "filter": filterElements ? _filterBuilder(filterElements) : null,
+        "filter": !filterElements ? null : _filterBuilder(filterElements),
         "granularity": _getGranularity(granularity),
         "aggregations": [
             {
