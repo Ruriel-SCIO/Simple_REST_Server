@@ -5,5 +5,7 @@ services:
         container_name: node_server
         network_mode: host
         environment: 
+            #Indicates the port that will be used by the application.
             PORT: '7000'
+            #Indicates the location of the Druid Server.
             DRUID_SERVER: 'http://localhost:8888'
