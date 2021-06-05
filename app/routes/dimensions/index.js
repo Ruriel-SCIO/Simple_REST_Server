@@ -6,7 +6,7 @@ module.exports = Router().get('/dimensions', async (req, res, next) => {
         res.json(result);
     }
     catch (err) {
-        console.log(err)
+        console.log('error', err)
         res.send(err)
     }
 })

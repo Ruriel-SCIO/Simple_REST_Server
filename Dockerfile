@@ -1,9 +1,7 @@
-FROM node:lts-alpine3.13
-ENV PROJECT_DIR /server
-WORKDIR ${PROJECT_DIR}
-COPY ./package.json ${PROJECT_DIR}/
-COPY ./app ${PROJECT_DIR}/app
-COPY ./config ${PROJECT_DIR}/config
-COPY ./main.js ${PROJECT_DIR}/
-RUN npm install --production
+FROM node:lts-alpine3.13 as build
+WORKDIR /server
+COPY ./package.json ./main.js /server/
+COPY ./app /server/app
+COPY ./config /server/config
+RUN npm install --production && npm prune --production
 ENTRYPOINT [ "npm", "start"]
