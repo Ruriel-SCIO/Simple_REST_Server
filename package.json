@@ -5,7 +5,7 @@
   "main": "main.js",
   "repository": "git@github.com:Ruriel-SCIO/Simple_REST_Server.git",
   "author": "Ruriel <rurielsantos@scio.solutions.com.br>",
-  "license": "GNUv3",
+  "license": "GPLv3",
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
